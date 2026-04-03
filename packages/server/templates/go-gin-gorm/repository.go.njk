@@ -1,0 +1,63 @@
+package repository
+
+import (
+	"context"
+
+	"gorm.io/gorm"
+
+	"{{ global.packageName }}/internal/domain/{{ global.moduleName }}/entity"
+)
+
+// {{ table.shortClassName }}Repository 仓储接口
+type {{ table.shortClassName }}Repository interface {
+	Create(ctx context.Context, model *entity.{{ table.shortClassName }}) error
+	Update(ctx context.Context, model *entity.{{ table.shortClassName }}) error
+	DeleteByID(ctx context.Context, id {% if table.pkColumn.dataType in ['bigint', 'int', 'tinyint', 'smallint', 'mediumint'] %}int64{% elif table.pkColumn.dataType in ['float', 'double', 'decimal'] %}float64{% elif table.pkColumn.dataType in ['datetime', 'timestamp', 'date'] %}string{% elif table.pkColumn.dataType in ['bit', 'bool', 'boolean'] %}bool{% else %}string{% endif %}) error
+	FindByID(ctx context.Context, id {% if table.pkColumn.dataType in ['bigint', 'int', 'tinyint', 'smallint', 'mediumint'] %}int64{% elif table.pkColumn.dataType in ['float', 'double', 'decimal'] %}float64{% elif table.pkColumn.dataType in ['datetime', 'timestamp', 'date'] %}string{% elif table.pkColumn.dataType in ['bit', 'bool', 'boolean'] %}bool{% else %}string{% endif %}) (*entity.{{ table.shortClassName }}, error)
+	List(ctx context.Context, offset, limit int) ([]*entity.{{ table.shortClassName }}, error)
+	Count(ctx context.Context) (int64, error)
+}
+
+type {{ table.shortCamelName }}Repository struct {
+	db *gorm.DB
+}
+
+// New{{ table.shortClassName }}Repository 创建仓储实现
+func New{{ table.shortClassName }}Repository(db *gorm.DB) {{ table.shortClassName }}Repository {
+	return &{{ table.shortCamelName }}Repository{db: db}
+}
+
+func (r *{{ table.shortCamelName }}Repository) Create(ctx context.Context, model *entity.{{ table.shortClassName }}) error {
+	return r.db.WithContext(ctx).Create(model).Error
+}
+
+func (r *{{ table.shortCamelName }}Repository) Update(ctx context.Context, model *entity.{{ table.shortClassName }}) error {
+	return r.db.WithContext(ctx).Save(model).Error
+}
+
+func (r *{{ table.shortCamelName }}Repository) DeleteByID(ctx context.Context, id {% if table.pkColumn.dataType in ['bigint', 'int', 'tinyint', 'smallint', 'mediumint'] %}int64{% elif table.pkColumn.dataType in ['float', 'double', 'decimal'] %}float64{% elif table.pkColumn.dataType in ['datetime', 'timestamp', 'date'] %}string{% elif table.pkColumn.dataType in ['bit', 'bool', 'boolean'] %}bool{% else %}string{% endif %}) error {
+	return r.db.WithContext(ctx).Delete(&entity.{{ table.shortClassName }}{}, id).Error
+}
+
+func (r *{{ table.shortCamelName }}Repository) FindByID(ctx context.Context, id {% if table.pkColumn.dataType in ['bigint', 'int', 'tinyint', 'smallint', 'mediumint'] %}int64{% elif table.pkColumn.dataType in ['float', 'double', 'decimal'] %}float64{% elif table.pkColumn.dataType in ['datetime', 'timestamp', 'date'] %}string{% elif table.pkColumn.dataType in ['bit', 'bool', 'boolean'] %}bool{% else %}string{% endif %}) (*entity.{{ table.shortClassName }}, error) {
+	var model entity.{{ table.shortClassName }}
+	if err := r.db.WithContext(ctx).First(&model, id).Error; err != nil {
+		return nil, err
+	}
+	return &model, nil
+}
+
+func (r *{{ table.shortCamelName }}Repository) List(ctx context.Context, offset, limit int) ([]*entity.{{ table.shortClassName }}, error) {
+	var models []*entity.{{ table.shortClassName }}
+	err := r.db.WithContext(ctx).
+		Offset(offset).
+		Limit(limit).
+		Find(&models).Error
+	return models, err
+}
+
+func (r *{{ table.shortCamelName }}Repository) Count(ctx context.Context) (int64, error) {
+	var total int64
+	err := r.db.WithContext(ctx).Model(&entity.{{ table.shortClassName }}{}).Count(&total).Error
+	return total, err
+}

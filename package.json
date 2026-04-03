@@ -1,0 +1,42 @@
+{
+  "name": "code-forge",
+  "version": "1.0.0",
+  "description": "智能代码生成器 - A local web-based code generator tool",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter server dev & pnpm --filter web dev",
+    "dev:server": "pnpm --filter server dev",
+    "dev:web": "pnpm --filter web dev",
+    "build": "pnpm --filter server build && pnpm --filter web build",
+    "build:server": "pnpm --filter server build",
+    "build:web": "pnpm --filter web build",
+    "start": "pnpm --filter server start",
+    "start:prod": "pnpm --filter server start:prod",
+    "test": "pnpm --filter server test",
+    "test:e2e": "pnpm --filter server test:e2e",
+    "lint": "pnpm --filter \"*\" lint",
+    "format": "pnpm --filter \"*\" format",
+    "clean": "rimraf packages/*/dist packages/*/node_modules/.vite",
+    "clean:all": "rimraf node_modules packages/*/node_modules pnpm-lock.yaml packages/data/codeforge.db"
+  },
+  "keywords": [
+    "code-generator",
+    "template-engine",
+    "nunjucks",
+    "nestjs",
+    "react",
+    "crud",
+    "ddl-parser"
+  ],
+  "author": "CodeForge Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "rimraf": "^5.0.5",
+    "prettier": "^3.2.5"
+  }
+}

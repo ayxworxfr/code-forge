@@ -1,0 +1,73 @@
+package {{ global.packageName }}.controller;
+
+import {{ global.packageName }}.entity.{{ table.shortClassName }};
+import {{ global.packageName }}.service.{{ table.shortClassName }}Service;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * {{ table.tableComment or table.tableName }} Controller
+ * 
+ * @author {{ global.author }}
+ * @date {{ global.date }}
+ */
+@RestController
+@RequestMapping("/{{ global.moduleName }}/{{ table.shortCamelName }}")
+public class {{ table.shortClassName }}Controller {
+
+    @Autowired
+    private {{ table.shortClassName }}Service {{ table.shortCamelName }}Service;
+
+    /**
+     * 分页查询
+     */
+    @GetMapping("/page")
+    public Page<{{ table.shortClassName }}> page(@RequestParam(defaultValue = "1") Integer current,
+                                                  @RequestParam(defaultValue = "10") Integer size) {
+        return {{ table.shortCamelName }}Service.page(new Page<>(current, size), new QueryWrapper<>());
+    }
+
+    /**
+     * 列表查询
+     */
+    @GetMapping("/list")
+    public List<{{ table.shortClassName }}> list() {
+        return {{ table.shortCamelName }}Service.list();
+    }
+
+    /**
+     * 根据ID查询
+     */
+    @GetMapping("/{id}")
+    public {{ table.shortClassName }} getById(@PathVariable Long id) {
+        return {{ table.shortCamelName }}Service.getById(id);
+    }
+
+    /**
+     * 新增
+     */
+    @PostMapping
+    public boolean save(@RequestBody {{ table.shortClassName }} {{ table.shortCamelName }}) {
+        return {{ table.shortCamelName }}Service.save({{ table.shortCamelName }});
+    }
+
+    /**
+     * 修改
+     */
+    @PutMapping
+    public boolean update(@RequestBody {{ table.shortClassName }} {{ table.shortCamelName }}) {
+        return {{ table.shortCamelName }}Service.updateById({{ table.shortCamelName }});
+    }
+
+    /**
+     * 删除
+     */
+    @DeleteMapping("/{id}")
+    public boolean delete(@PathVariable Long id) {
+        return {{ table.shortCamelName }}Service.removeById(id);
+    }
+}

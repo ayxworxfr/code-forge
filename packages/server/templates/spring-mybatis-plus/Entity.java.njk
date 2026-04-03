@@ -1,0 +1,37 @@
+package {{ global.packageName }}.entity;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+import java.io.Serializable;
+{%- for imp in table.javaImports %}
+import {{ imp }};
+{%- endfor %}
+
+/**
+ * {{ table.tableComment or table.tableName }}
+ * 
+ * @author {{ global.author }}
+ * @date {{ global.date }}
+ */
+@Data
+@TableName("{{ table.tableName }}")
+public class {{ table.shortClassName }} implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    {%- for column in table.columns %}
+    
+    /**
+     * {{ column.columnComment or column.columnName }}
+     */
+    {%- if column.isPrimaryKey %}
+    @TableId(value = "{{ column.columnName }}", type = IdType.AUTO)
+    {%- else %}
+    @TableField("{{ column.columnName }}")
+    {%- endif %}
+    private {{ column.javaType }} {{ column.javaField }};
+    {%- endfor %}
+}

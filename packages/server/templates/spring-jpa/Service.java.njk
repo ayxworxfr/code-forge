@@ -1,0 +1,42 @@
+package {{ global.packageName }}.service;
+
+import {{ global.packageName }}.entity.{{ table.shortClassName }};
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * {{ table.tableComment or table.tableName }} Service
+ * 
+ * @author {{ global.author }}
+ * @date {{ global.date }}
+ */
+public interface {{ table.shortClassName }}Service {
+
+    /**
+     * 分页查询
+     */
+    Page<{{ table.shortClassName }}> findAll(Pageable pageable);
+
+    /**
+     * 查询所有
+     */
+    List<{{ table.shortClassName }}> findAll();
+
+    /**
+     * 根据ID查询
+     */
+    Optional<{{ table.shortClassName }}> findById({{ table.pkColumn.javaType }} id);
+
+    /**
+     * 保存
+     */
+    {{ table.shortClassName }} save({{ table.shortClassName }} entity);
+
+    /**
+     * 删除
+     */
+    void deleteById({{ table.pkColumn.javaType }} id);
+}

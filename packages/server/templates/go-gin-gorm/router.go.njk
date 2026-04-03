@@ -1,0 +1,15 @@
+package http
+
+import "github.com/gin-gonic/gin"
+
+// Register{{ table.shortClassName }}Routes 注册{{ table.tableComment or table.tableName }}路由
+func Register{{ table.shortClassName }}Routes(rg *gin.RouterGroup, handler *{{ table.shortClassName }}Handler) {
+	group := rg.Group("/{{ table.shortCamelName }}")
+	{
+		group.GET("", handler.List)
+		group.GET("/:id", handler.GetByID)
+		group.POST("", handler.Create)
+		group.PUT("", handler.Update)
+		group.DELETE("/:id", handler.Delete)
+	}
+}

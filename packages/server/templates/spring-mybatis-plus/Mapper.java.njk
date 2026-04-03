@@ -1,0 +1,16 @@
+package {{ global.packageName }}.mapper;
+
+import {{ global.packageName }}.entity.{{ table.shortClassName }};
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
+
+/**
+ * {{ table.tableComment or table.tableName }} Mapper
+ * 
+ * @author {{ global.author }}
+ * @date {{ global.date }}
+ */
+@Mapper
+public interface {{ table.shortClassName }}Mapper extends BaseMapper<{{ table.shortClassName }}> {
+
+}

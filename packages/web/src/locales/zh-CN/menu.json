@@ -1,0 +1,8 @@
+{
+  "generator": "代码生成",
+  "datasource": "数据源",
+  "template": "模板管理",
+  "typeMapping": "类型映射",
+  "history": "生成历史",
+  "config": "全局设置"
+}

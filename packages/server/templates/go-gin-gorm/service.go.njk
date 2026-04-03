@@ -1,0 +1,89 @@
+package service
+
+import (
+	"context"
+
+	"{{ global.packageName }}/internal/application/{{ global.moduleName }}/dto"
+	"{{ global.packageName }}/internal/domain/{{ global.moduleName }}/entity"
+	"{{ global.packageName }}/internal/infrastructure/persistence/{{ global.moduleName }}/repository"
+)
+
+// {{ table.shortClassName }}Service 应用服务
+type {{ table.shortClassName }}Service interface {
+	Create(ctx context.Context, req *dto.Create{{ table.shortClassName }}Request) (*entity.{{ table.shortClassName }}, error)
+	Update(ctx context.Context, req *dto.Update{{ table.shortClassName }}Request) (*entity.{{ table.shortClassName }}, error)
+	DeleteByID(ctx context.Context, id {% if table.pkColumn.dataType in ['bigint', 'int', 'tinyint', 'smallint', 'mediumint'] %}int64{% elif table.pkColumn.dataType in ['float', 'double', 'decimal'] %}float64{% elif table.pkColumn.dataType in ['datetime', 'timestamp', 'date'] %}string{% elif table.pkColumn.dataType in ['bit', 'bool', 'boolean'] %}bool{% else %}string{% endif %}) error
+	FindByID(ctx context.Context, id {% if table.pkColumn.dataType in ['bigint', 'int', 'tinyint', 'smallint', 'mediumint'] %}int64{% elif table.pkColumn.dataType in ['float', 'double', 'decimal'] %}float64{% elif table.pkColumn.dataType in ['datetime', 'timestamp', 'date'] %}string{% elif table.pkColumn.dataType in ['bit', 'bool', 'boolean'] %}bool{% else %}string{% endif %}) (*entity.{{ table.shortClassName }}, error)
+	List(ctx context.Context, query *dto.{{ table.shortClassName }}Query) ([]*entity.{{ table.shortClassName }}, int64, error)
+}
+
+type {{ table.shortCamelName }}Service struct {
+	repo repository.{{ table.shortClassName }}Repository
+}
+
+// New{{ table.shortClassName }}Service 创建服务实现
+func New{{ table.shortClassName }}Service(repo repository.{{ table.shortClassName }}Repository) {{ table.shortClassName }}Service {
+	return &{{ table.shortCamelName }}Service{repo: repo}
+}
+
+func (s *{{ table.shortCamelName }}Service) Create(ctx context.Context, req *dto.Create{{ table.shortClassName }}Request) (*entity.{{ table.shortClassName }}, error) {
+	model := &entity.{{ table.shortClassName }}{
+{%- for column in table.columns %}
+{%- if not column.isPrimaryKey or not column.isAutoIncrement %}
+		{{ column.columnName | pascalCase }}: req.{{ column.columnName | pascalCase }},
+{%- endif %}
+{%- endfor %}
+	}
+	if err := s.repo.Create(ctx, model); err != nil {
+		return nil, err
+	}
+	return model, nil
+}
+
+func (s *{{ table.shortCamelName }}Service) Update(ctx context.Context, req *dto.Update{{ table.shortClassName }}Request) (*entity.{{ table.shortClassName }}, error) {
+	model, err := s.repo.FindByID(ctx, req.{{ table.pkColumn.columnName | pascalCase }})
+	if err != nil {
+		return nil, err
+	}
+{%- for column in table.columns %}
+{%- if not column.isPrimaryKey %}
+	if req.{{ column.columnName | pascalCase }} != nil {
+		model.{{ column.columnName | pascalCase }} = *req.{{ column.columnName | pascalCase }}
+	}
+{%- endif %}
+{%- endfor %}
+	if err = s.repo.Update(ctx, model); err != nil {
+		return nil, err
+	}
+	return model, nil
+}
+
+func (s *{{ table.shortCamelName }}Service) DeleteByID(ctx context.Context, id {% if table.pkColumn.dataType in ['bigint', 'int', 'tinyint', 'smallint', 'mediumint'] %}int64{% elif table.pkColumn.dataType in ['float', 'double', 'decimal'] %}float64{% elif table.pkColumn.dataType in ['datetime', 'timestamp', 'date'] %}string{% elif table.pkColumn.dataType in ['bit', 'bool', 'boolean'] %}bool{% else %}string{% endif %}) error {
+	return s.repo.DeleteByID(ctx, id)
+}
+
+func (s *{{ table.shortCamelName }}Service) FindByID(ctx context.Context, id {% if table.pkColumn.dataType in ['bigint', 'int', 'tinyint', 'smallint', 'mediumint'] %}int64{% elif table.pkColumn.dataType in ['float', 'double', 'decimal'] %}float64{% elif table.pkColumn.dataType in ['datetime', 'timestamp', 'date'] %}string{% elif table.pkColumn.dataType in ['bit', 'bool', 'boolean'] %}bool{% else %}string{% endif %}) (*entity.{{ table.shortClassName }}, error) {
+	return s.repo.FindByID(ctx, id)
+}
+
+func (s *{{ table.shortCamelName }}Service) List(ctx context.Context, query *dto.{{ table.shortClassName }}Query) ([]*entity.{{ table.shortClassName }}, int64, error) {
+	page := query.Page
+	if page <= 0 {
+		page = 1
+	}
+	pageSize := query.PageSize
+	if pageSize <= 0 {
+		pageSize = 10
+	}
+	offset := (page - 1) * pageSize
+
+	items, err := s.repo.List(ctx, offset, pageSize)
+	if err != nil {
+		return nil, 0, err
+	}
+	total, err := s.repo.Count(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	return items, total, nil
+}

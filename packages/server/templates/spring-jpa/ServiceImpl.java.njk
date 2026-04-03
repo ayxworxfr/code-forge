@@ -1,0 +1,52 @@
+package {{ global.packageName }}.service.impl;
+
+import {{ global.packageName }}.entity.{{ table.shortClassName }};
+import {{ global.packageName }}.repository.{{ table.shortClassName }}Repository;
+import {{ global.packageName }}.service.{{ table.shortClassName }}Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * {{ table.tableComment or table.tableName }} Service 实现
+ * 
+ * @author {{ global.author }}
+ * @date {{ global.date }}
+ */
+@Service
+@Transactional
+public class {{ table.shortClassName }}ServiceImpl implements {{ table.shortClassName }}Service {
+
+    @Autowired
+    private {{ table.shortClassName }}Repository {{ table.shortCamelName }}Repository;
+
+    @Override
+    public Page<{{ table.shortClassName }}> findAll(Pageable pageable) {
+        return {{ table.shortCamelName }}Repository.findAll(pageable);
+    }
+
+    @Override
+    public List<{{ table.shortClassName }}> findAll() {
+        return {{ table.shortCamelName }}Repository.findAll();
+    }
+
+    @Override
+    public Optional<{{ table.shortClassName }}> findById({{ table.pkColumn.javaType }} id) {
+        return {{ table.shortCamelName }}Repository.findById(id);
+    }
+
+    @Override
+    public {{ table.shortClassName }} save({{ table.shortClassName }} entity) {
+        return {{ table.shortCamelName }}Repository.save(entity);
+    }
+
+    @Override
+    public void deleteById({{ table.pkColumn.javaType }} id) {
+        {{ table.shortCamelName }}Repository.deleteById(id);
+    }
+}

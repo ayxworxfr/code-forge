@@ -1,0 +1,79 @@
+package {{ global.packageName }}.controller;
+
+import {{ global.packageName }}.entity.{{ table.shortClassName }};
+import {{ global.packageName }}.service.{{ table.shortClassName }}Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * {{ table.tableComment or table.tableName }} Controller
+ * 
+ * @author {{ global.author }}
+ * @date {{ global.date }}
+ */
+@RestController
+@RequestMapping("/{{ global.moduleName }}/{{ table.shortCamelName }}")
+public class {{ table.shortClassName }}Controller {
+
+    @Autowired
+    private {{ table.shortClassName }}Service {{ table.shortCamelName }}Service;
+
+    /**
+     * 分页查询
+     */
+    @GetMapping("/page")
+    public Page<{{ table.shortClassName }}> page(@RequestParam(defaultValue = "0") Integer page,
+                                                  @RequestParam(defaultValue = "10") Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return {{ table.shortCamelName }}Service.findAll(pageable);
+    }
+
+    /**
+     * 列表查询
+     */
+    @GetMapping("/list")
+    public List<{{ table.shortClassName }}> list() {
+        return {{ table.shortCamelName }}Service.findAll();
+    }
+
+    /**
+     * 根据ID查询
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<{{ table.shortClassName }}> getById(@PathVariable {{ table.pkColumn.javaType }} id) {
+        return {{ table.shortCamelName }}Service.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    /**
+     * 新增或更新
+     */
+    @PostMapping
+    public {{ table.shortClassName }} save(@RequestBody {{ table.shortClassName }} {{ table.shortCamelName }}) {
+        return {{ table.shortCamelName }}Service.save({{ table.shortCamelName }});
+    }
+
+    /**
+     * 修改
+     */
+    @PutMapping
+    public {{ table.shortClassName }} update(@RequestBody {{ table.shortClassName }} {{ table.shortCamelName }}) {
+        return {{ table.shortCamelName }}Service.save({{ table.shortCamelName }});
+    }
+
+    /**
+     * 删除
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable {{ table.pkColumn.javaType }} id) {
+        {{ table.shortCamelName }}Service.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
+}

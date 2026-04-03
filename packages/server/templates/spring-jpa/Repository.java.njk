@@ -1,0 +1,17 @@
+package {{ global.packageName }}.repository;
+
+import {{ global.packageName }}.entity.{{ table.shortClassName }};
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.stereotype.Repository;
+
+/**
+ * {{ table.tableComment or table.tableName }} Repository
+ * 
+ * @author {{ global.author }}
+ * @date {{ global.date }}
+ */
+@Repository
+public interface {{ table.shortClassName }}Repository extends JpaRepository<{{ table.shortClassName }}, {{ table.pkColumn.javaType }}>, JpaSpecificationExecutor<{{ table.shortClassName }}> {
+
+}

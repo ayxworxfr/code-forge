@@ -1,0 +1,29 @@
+package dto
+
+// Create{{ table.shortClassName }}Request 创建请求
+type Create{{ table.shortClassName }}Request struct {
+{%- for column in table.columns %}
+{%- if not column.isPrimaryKey or not column.isAutoIncrement %}
+	// {{ column.columnComment or column.columnName }}
+	{{ column.columnName | pascalCase }} {% if column.dataType in ['bigint', 'int', 'tinyint', 'smallint', 'mediumint'] %}int64{% elif column.dataType in ['float', 'double', 'decimal'] %}float64{% elif column.dataType in ['datetime', 'timestamp', 'date'] %}string{% elif column.dataType in ['bit', 'bool', 'boolean'] %}bool{% else %}string{% endif %} `json:"{{ column.columnName | camelCase }}"`
+{%- endif %}
+{%- endfor %}
+}
+
+// Update{{ table.shortClassName }}Request 更新请求
+type Update{{ table.shortClassName }}Request struct {
+	// 主键
+	{{ table.pkColumn.columnName | pascalCase }} {% if table.pkColumn.dataType in ['bigint', 'int', 'tinyint', 'smallint', 'mediumint'] %}int64{% elif table.pkColumn.dataType in ['float', 'double', 'decimal'] %}float64{% elif table.pkColumn.dataType in ['datetime', 'timestamp', 'date'] %}string{% elif table.pkColumn.dataType in ['bit', 'bool', 'boolean'] %}bool{% else %}string{% endif %} `json:"{{ table.pkColumn.columnName | camelCase }}"`
+{%- for column in table.columns %}
+{%- if not column.isPrimaryKey %}
+	// {{ column.columnComment or column.columnName }}
+	{{ column.columnName | pascalCase }} *{% if column.dataType in ['bigint', 'int', 'tinyint', 'smallint', 'mediumint'] %}int64{% elif column.dataType in ['float', 'double', 'decimal'] %}float64{% elif column.dataType in ['datetime', 'timestamp', 'date'] %}string{% elif column.dataType in ['bit', 'bool', 'boolean'] %}bool{% else %}string{% endif %} `json:"{{ column.columnName | camelCase }}"`
+{%- endif %}
+{%- endfor %}
+}
+
+// {{ table.shortClassName }}Query 查询参数
+type {{ table.shortClassName }}Query struct {
+	Page     int `form:"page"`
+	PageSize int `form:"pageSize"`
+}

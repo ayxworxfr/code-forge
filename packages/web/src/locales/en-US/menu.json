@@ -1,0 +1,8 @@
+{
+  "generator": "Generator",
+  "datasource": "Data Source",
+  "template": "Templates",
+  "typeMapping": "Type Mapping",
+  "history": "History",
+  "config": "Settings"
+}

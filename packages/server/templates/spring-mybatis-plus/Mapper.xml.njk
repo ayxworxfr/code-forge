@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="{{ global.packageName }}.mapper.{{ table.shortClassName }}Mapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="{{ global.packageName }}.entity.{{ table.shortClassName }}">
+        {%- for column in table.columns %}
+        {%- if column.isPrimaryKey %}
+        <id column="{{ column.columnName }}" property="{{ column.javaField }}" />
+        {%- else %}
+        <result column="{{ column.columnName }}" property="{{ column.javaField }}" />
+        {%- endif %}
+        {%- endfor %}
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        {%- for column in table.columns %}{{ column.columnName }}{%- if not loop.last %}, {% endif %}{%- endfor %}
+    </sql>
+
+</mapper>

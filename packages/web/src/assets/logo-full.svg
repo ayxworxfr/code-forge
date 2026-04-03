@@ -1,0 +1,13 @@
+<svg width="300" height="64" viewBox="0 0 300 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="64" height="64" rx="14" fill="#0B1220" />
+  <path d="M22 22L14 32L22 42" stroke="#3B82F6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M42 22L50 32L42 42" stroke="#3B82F6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M36 16L26 48" stroke="#7DD3FC" stroke-width="3.2" stroke-linecap="round" />
+  <path d="M33.6 22.4C36 19.8 40.2 19.9 42.5 22.6C44.1 24.4 44.6 26.8 44.1 29L36.6 36.6L29.7 29.7C29.3 27 30 24.4 31.8 22.8C32.3 22.4 33 22.1 33.6 22.4Z" fill="#F59E0B" />
+  <text x="80" y="40" fill="white" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="31" font-weight="700" letter-spacing="0.3">
+    Code
+  </text>
+  <text x="153" y="40" fill="#60A5FA" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="31" font-weight="700" letter-spacing="0.3">
+    Forge
+  </text>
+</svg>

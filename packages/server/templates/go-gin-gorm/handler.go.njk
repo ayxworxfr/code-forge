@@ -1,0 +1,111 @@
+package http
+
+import (
+	"net/http"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
+
+	"{{ global.packageName }}/internal/application/{{ global.moduleName }}/dto"
+	"{{ global.packageName }}/internal/application/{{ global.moduleName }}/service"
+)
+
+// {{ table.shortClassName }}Handler HTTP 处理器
+type {{ table.shortClassName }}Handler struct {
+	svc service.{{ table.shortClassName }}Service
+}
+
+// New{{ table.shortClassName }}Handler 创建处理器
+func New{{ table.shortClassName }}Handler(svc service.{{ table.shortClassName }}Service) *{{ table.shortClassName }}Handler {
+	return &{{ table.shortClassName }}Handler{svc: svc}
+}
+
+// Create 创建{{ table.tableComment or table.tableName }}
+func (h *{{ table.shortClassName }}Handler) Create(c *gin.Context) {
+	var req dto.Create{{ table.shortClassName }}Request
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+
+	data, err := h.svc.Create(c.Request.Context(), &req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": data})
+}
+
+// Update 更新{{ table.tableComment or table.tableName }}
+func (h *{{ table.shortClassName }}Handler) Update(c *gin.Context) {
+	var req dto.Update{{ table.shortClassName }}Request
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+
+	data, err := h.svc.Update(c.Request.Context(), &req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": data})
+}
+
+// Delete 删除{{ table.tableComment or table.tableName }}
+func (h *{{ table.shortClassName }}Handler) Delete(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid id"})
+		return
+	}
+
+	if err = h.svc.DeleteByID(c.Request.Context(), id); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "ok"})
+}
+
+// GetByID 按 ID 查询{{ table.tableComment or table.tableName }}
+func (h *{{ table.shortClassName }}Handler) GetByID(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid id"})
+		return
+	}
+
+	data, err := h.svc.FindByID(c.Request.Context(), id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": data})
+}
+
+// List 列表查询{{ table.tableComment or table.tableName }}
+func (h *{{ table.shortClassName }}Handler) List(c *gin.Context) {
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
+
+	query := &dto.{{ table.shortClassName }}Query{
+		Page:     page,
+		PageSize: pageSize,
+	}
+	items, total, err := h.svc.List(c.Request.Context(), query)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": gin.H{
+			"items":    items,
+			"total":    total,
+			"page":     page,
+			"pageSize": pageSize,
+		},
+	})
+}

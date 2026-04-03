@@ -1,0 +1,19 @@
+package entity
+
+import "time"
+
+// {{ table.shortClassName }} {{ table.tableComment or table.tableName }}领域实体
+//
+// @author {{ global.author }}
+// @date {{ global.date }}
+type {{ table.shortClassName }} struct {
+{%- for column in table.columns %}
+	// {{ column.columnComment or column.columnName }}
+	{{ column.columnName | pascalCase }} {% if column.dataType in ['bigint', 'int', 'tinyint', 'smallint', 'mediumint'] %}int64{% elif column.dataType in ['float', 'double', 'decimal'] %}float64{% elif column.dataType in ['datetime', 'timestamp', 'date'] %}time.Time{% elif column.dataType in ['bit', 'bool', 'boolean'] %}bool{% else %}string{% endif %} `gorm:"column:{{ column.columnName }}{% if column.isPrimaryKey %};primaryKey{% endif %}{% if column.isAutoIncrement %};autoIncrement{% endif %}" json:"{{ column.columnName | camelCase }}"`
+{%- endfor %}
+}
+
+// TableName 指定 GORM 表名
+func ({{ table.shortClassName }}) TableName() string {
+	return "{{ table.tableName }}"
+}

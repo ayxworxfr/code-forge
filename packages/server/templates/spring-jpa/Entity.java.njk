@@ -1,0 +1,40 @@
+package {{ global.packageName }}.entity;
+
+import lombok.Data;
+import javax.persistence.*;
+import java.io.Serializable;
+{%- for imp in table.javaImports %}
+import {{ imp }};
+{%- endfor %}
+
+/**
+ * {{ table.tableComment or table.tableName }}
+ * 
+ * @author {{ global.author }}
+ * @date {{ global.date }}
+ */
+@Data
+@Entity
+@Table(name = "{{ table.tableName }}")
+public class {{ table.shortClassName }} implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    {%- for column in table.columns %}
+    
+    /**
+     * {{ column.columnComment or column.columnName }}
+     */
+    {%- if column.isPrimaryKey %}
+    @Id
+    {%- if column.isAutoIncrement %}
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    {%- endif %}
+    {%- endif %}
+    @Column(name = "{{ column.columnName }}"
+    {%- if not column.isNullable %}, nullable = false{%- endif %}
+    {%- if column.columnLength %}, length = {{ column.columnLength }}{%- endif %}
+    )
+    private {{ column.javaType }} {{ column.javaField }};
+    {%- endfor %}
+}

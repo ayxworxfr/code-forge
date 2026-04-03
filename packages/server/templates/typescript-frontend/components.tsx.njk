@@ -1,0 +1,168 @@
+import React, { useState, useEffect } from 'react';
+import { Table, Button, Form, Input, Modal, message, Space, Popconfirm } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import { page{{ table.shortClassName }}, create{{ table.shortClassName }}, update{{ table.shortClassName }}, delete{{ table.shortClassName }} } from './api';
+import type { {{ table.shortClassName }}, {{ table.shortClassName }}Form } from './types';
+
+/**
+ * {{ table.tableComment or table.tableName }} 管理组件
+ * 
+ * @author {{ global.author }}
+ * @date {{ global.date }}
+ */
+export default function {{ table.shortClassName }}Manager() {
+  const [dataSource, setDataSource] = useState<{{ table.shortClassName }}[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [total, setTotal] = useState(0);
+  const [current, setCurrent] = useState(1);
+  const [size, setSize] = useState(10);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [editingRecord, setEditingRecord] = useState<{{ table.shortClassName }} | null>(null);
+  const [form] = Form.useForm();
+
+  // 表格列定义
+  const columns: ColumnsType<{{ table.shortClassName }}> = [
+    {%- for column in table.columns %}
+    {
+      title: '{{ column.columnComment or column.columnName }}',
+      dataIndex: '{{ column.tsField }}',
+      key: '{{ column.tsField }}',
+      {%- if column.isPrimaryKey %}
+      width: 80,
+      {%- endif %}
+    },
+    {%- endfor %}
+    {
+      title: '操作',
+      key: 'action',
+      width: 150,
+      render: (_, record) => (
+        <Space>
+          <Button type="link" size="small" onClick={() => handleEdit(record)}>
+            编辑
+          </Button>
+          <Popconfirm
+            title="确定删除？"
+            onConfirm={() => handleDelete(record.{{ table.pkColumn.tsField }})}
+          >
+            <Button type="link" size="small" danger>
+              删除
+            </Button>
+          </Popconfirm>
+        </Space>
+      ),
+    },
+  ];
+
+  // 加载数据
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const res = await page{{ table.shortClassName }}({ current, size });
+      setDataSource(res.records);
+      setTotal(res.total);
+    } catch (error) {
+      message.error('加载失败');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, [current, size]);
+
+  // 新增
+  const handleAdd = () => {
+    setEditingRecord(null);
+    form.resetFields();
+    setModalVisible(true);
+  };
+
+  // 编辑
+  const handleEdit = (record: {{ table.shortClassName }}) => {
+    setEditingRecord(record);
+    form.setFieldsValue(record);
+    setModalVisible(true);
+  };
+
+  // 删除
+  const handleDelete = async (id: number | string) => {
+    try {
+      await delete{{ table.shortClassName }}(id);
+      message.success('删除成功');
+      loadData();
+    } catch (error) {
+      message.error('删除失败');
+    }
+  };
+
+  // 提交表单
+  const handleSubmit = async () => {
+    try {
+      const values = await form.validateFields();
+      if (editingRecord) {
+        await update{{ table.shortClassName }}({ ...values, {{ table.pkColumn.tsField }}: editingRecord.{{ table.pkColumn.tsField }} });
+        message.success('更新成功');
+      } else {
+        await create{{ table.shortClassName }}(values);
+        message.success('创建成功');
+      }
+      setModalVisible(false);
+      loadData();
+    } catch (error) {
+      message.error('提交失败');
+    }
+  };
+
+  return (
+    <div>
+      <div style={% raw %}{{ marginBottom: 16 }}{% endraw %}>
+        <Button type="primary" onClick={handleAdd}>
+          新增
+        </Button>
+      </div>
+
+      <Table
+        columns={columns}
+        dataSource={dataSource}
+        loading={loading}
+        rowKey="{{ table.pkColumn.tsField }}"
+        pagination={% raw %}{{
+          current,
+          pageSize: size,
+          total,
+          showSizeChanger: true,
+          showTotal: (total) => `共 ${total} 条`,
+          onChange: (page, pageSize) => {
+            setCurrent(page);
+            setSize(pageSize);
+          },
+        }}{% endraw %}
+      />
+
+      <Modal
+        title={editingRecord ? '编辑' : '新增'}
+        open={modalVisible}
+        onOk={handleSubmit}
+        onCancel={() => setModalVisible(false)}
+      >
+        <Form form={form} labelCol={% raw %}{{ span: 6 }}{% endraw %}>
+          {%- for column in table.columns %}
+          {%- if not column.isPrimaryKey or not column.isAutoIncrement %}
+          <Form.Item
+            label="{{ column.columnComment or column.columnName }}"
+            name="{{ column.tsField }}"
+            {%- if not column.isNullable %}
+            rules={[{ required: true, message: '请输入{{ column.columnComment or column.columnName }}' }]}
+            {%- endif %}
+          >
+            <Input placeholder="请输入{{ column.columnComment or column.columnName }}" />
+          </Form.Item>
+          {%- endif %}
+          {%- endfor %}
+        </Form>
+      </Modal>
+    </div>
+  );
+}
