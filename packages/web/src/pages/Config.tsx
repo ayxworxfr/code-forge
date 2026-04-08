@@ -166,7 +166,7 @@ export default function ConfigPage() {
             <Select
               placeholder={t('common.pleaseSelect')}
               options={templateGroups.map((group) => ({
-                label: `${group.name} (#${group.id})`,
+                label: group.name,
                 value: String(group.id),
               }))}
             />

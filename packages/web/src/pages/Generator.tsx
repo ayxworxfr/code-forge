@@ -360,13 +360,13 @@ export default function GeneratorPage() {
     <div>
       <Card title={t('generator.title')} style={{ marginBottom: 16 }}>
         <Space direction="vertical" style={{ width: '100%' }} size="large">
-          <Row gutter={16}>
-            <Col span={6}>
+          <Row gutter={[16, 16]}>
+            <Col xs={24} lg={8} xl={6}>
               <div style={{ marginBottom: 8 }}>{t('generator.selectDataSource')}</div>
               <Radio.Group
                 value={sourceMode}
                 onChange={(e) => setSourceMode(e.target.value)}
-                style={{ marginBottom: 12 }}
+                style={{ marginBottom: 12, display: 'flex', flexWrap: 'wrap', gap: 12 }}
               >
                 <Radio value="database">{t('datasource.dbMode')}</Radio>
                 <Radio value="ddl">{t('datasource.ddlMode')}</Radio>
@@ -398,7 +398,7 @@ export default function GeneratorPage() {
               )}
             </Col>
 
-            <Col span={6}>
+            <Col xs={24} lg={8} xl={5}>
               <div style={{ marginBottom: 8 }}>{t('generator.selectTemplateGroup')}</div>
               <Select
                 style={{ width: '100%' }}
@@ -412,31 +412,31 @@ export default function GeneratorPage() {
               />
             </Col>
 
-            <Col span={12}>
+            <Col xs={24} lg={24} xl={13}>
               <div style={{ marginBottom: 8 }}>{t('generator.globalConfig')}</div>
-              <Row gutter={8}>
-                <Col span={6}>
+              <Row gutter={[8, 8]}>
+                <Col xs={24} sm={12} md={8} xl={4}>
                   <Input
                     placeholder={t('generator.author')}
                     value={config.author}
                     onChange={(e) => updateConfig('author', e.target.value)}
                   />
                 </Col>
-                <Col span={9}>
+                <Col xs={24} sm={12} md={16} xl={11}>
                   <Input
                     placeholder={t('generator.basePackage')}
                     value={config.packageName}
                     onChange={(e) => updateConfig('packageName', e.target.value)}
                   />
                 </Col>
-                <Col span={5}>
+                <Col xs={12} sm={12} md={12} xl={5}>
                   <Input
                     placeholder={t('generator.moduleName')}
                     value={config.moduleName}
                     onChange={(e) => updateConfig('moduleName', e.target.value)}
                   />
                 </Col>
-                <Col span={4}>
+                <Col xs={12} sm={12} md={12} xl={4}>
                   <Input
                     placeholder={t('generator.tablePrefix')}
                     value={config.tablePrefix}
