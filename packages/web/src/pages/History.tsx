@@ -57,20 +57,20 @@ export default function HistoryPage() {
 
   const columns: ColumnsType<GenHistory> = [
     {
-      title: '数据源',
+      title: t('common.dataSource'),
       dataIndex: 'datasource_name',
       key: 'datasource_name',
       width: 150,
-      render: (name) => name || <Tag>DDL</Tag>,
+      render: (name) => name || <Tag>{t('common.ddl')}</Tag>,
     },
     {
-      title: '模板组',
+      title: t('common.templateGroup'),
       dataIndex: 'template_group_name',
       key: 'template_group_name',
       width: 200,
     },
     {
-      title: '表名',
+      title: t('common.tableName'),
       dataIndex: 'table_names',
       key: 'table_names',
       ellipsis: true,
@@ -87,13 +87,13 @@ export default function HistoryPage() {
       },
     },
     {
-      title: '文件数',
+      title: t('common.fileCount'),
       dataIndex: 'file_count',
       key: 'file_count',
       width: 100,
     },
     {
-      title: '生成时间',
+      title: t('common.generatedAt'),
       dataIndex: 'created_at',
       key: 'created_at',
       width: 180,
@@ -120,7 +120,7 @@ export default function HistoryPage() {
         extra={
           <Popconfirm title={t('common.clearConfirm')} onConfirm={handleClear}>
             <Button icon={<ClearOutlined />} danger>
-              清空历史
+              {t('common.clearHistory')}
             </Button>
           </Popconfirm>
         }

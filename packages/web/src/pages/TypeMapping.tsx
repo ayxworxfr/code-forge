@@ -81,36 +81,40 @@ export default function TypeMappingPage() {
 
   const columns: ColumnsType<TypeMapping> = [
     {
-      title: 'MySQL 类型',
+      title: t('common.mysqlType'),
       dataIndex: 'source_type',
       key: 'source_type',
       width: 150,
     },
     {
-      title: 'Java 类型',
+      title: t('common.javaType'),
       dataIndex: 'java_type',
       key: 'java_type',
       width: 150,
     },
     {
-      title: 'TypeScript 类型',
+      title: t('common.typescriptType'),
       dataIndex: 'ts_type',
       key: 'ts_type',
       width: 150,
     },
     {
-      title: 'JDBC 类型',
+      title: t('common.jdbcType'),
       dataIndex: 'jdbc_type',
       key: 'jdbc_type',
       width: 150,
     },
     {
-      title: '类型',
+      title: t('common.type'),
       dataIndex: 'is_builtin',
       key: 'is_builtin',
       width: 100,
       render: (isBuiltin: number) =>
-        isBuiltin ? <Tag color="blue">内置</Tag> : <Tag color="green">自定义</Tag>,
+        isBuiltin ? (
+          <Tag color="blue">{t('common.builtin')}</Tag>
+        ) : (
+          <Tag color="green">{t('common.custom')}</Tag>
+        ),
     },
     {
       title: t('common.actions'),
@@ -144,7 +148,7 @@ export default function TypeMappingPage() {
         title={t('menu.typeMapping')}
         extra={
           <Space>
-            <Popconfirm title="确认重置为默认类型映射吗？" onConfirm={handleReset}>
+            <Popconfirm title={t('common.resetTypeMappingConfirm')} onConfirm={handleReset}>
               <Button icon={<ReloadOutlined />}>{t('common.reset')}</Button>
             </Popconfirm>
             <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
@@ -172,7 +176,7 @@ export default function TypeMappingPage() {
         <Form form={form} layout="vertical">
           <Form.Item
             name="source_type"
-            label="MySQL 类型"
+            label={t('common.mysqlType')}
             rules={[{ required: true, message: t('common.required') }]}
           >
             <Input placeholder="varchar" disabled={editingId !== null} />
@@ -180,7 +184,7 @@ export default function TypeMappingPage() {
 
           <Form.Item
             name="java_type"
-            label="Java 类型"
+            label={t('common.javaType')}
             rules={[{ required: true, message: t('common.required') }]}
           >
             <Input placeholder="String" />
@@ -188,7 +192,7 @@ export default function TypeMappingPage() {
 
           <Form.Item
             name="ts_type"
-            label="TypeScript 类型"
+            label={t('common.typescriptType')}
             rules={[{ required: true, message: t('common.required') }]}
           >
             <Input placeholder="string" />
@@ -196,7 +200,7 @@ export default function TypeMappingPage() {
 
           <Form.Item
             name="jdbc_type"
-            label="JDBC 类型"
+            label={t('common.jdbcType')}
             rules={[{ required: true, message: t('common.required') }]}
           >
             <Input placeholder="VARCHAR" />

@@ -164,7 +164,7 @@ export default function GeneratorPage() {
         })),
       );
       setCurrentTableDetail(details[0] || null);
-      message.success(`解析成功，共 ${details.length} 张表`);
+      message.success(t('generator.parseDdlSuccess', { count: details.length }));
     } catch (error) {
       console.error('Failed to parse DDL:', error);
     }
@@ -252,7 +252,7 @@ export default function GeneratorPage() {
         globalConfig: config,
       });
       setGeneratedZipBlob(blob);
-      message.success('预览包已生成，请确认后点击“下载 ZIP”');
+      message.success(t('generator.previewZipReady'));
     } catch (error) {
       console.error('Failed to generate:', error);
       message.error(t('generator.generateFailed'));
@@ -263,7 +263,7 @@ export default function GeneratorPage() {
 
   const handleDownloadZip = () => {
     if (!generatedZipBlob) {
-      message.warning('请先生成预览包');
+      message.warning(t('generator.pleaseGeneratePreviewZipFirst'));
       return;
     }
 
@@ -275,7 +275,7 @@ export default function GeneratorPage() {
     link.click();
     document.body.removeChild(link);
     window.URL.revokeObjectURL(url);
-    message.success('ZIP 下载已开始');
+    message.success(t('generator.downloadZipStarted'));
   };
 
   const handleClearCurrentSession = () => {
@@ -292,7 +292,7 @@ export default function GeneratorPage() {
     setDdlTableDetails([]);
     clearPreviewResults();
     setDdlContent('');
-    message.success('当前操作已清空');
+    message.success(t('generator.currentOperationCleared'));
   };
 
   const getLanguageByFileName = (fileName: string) => {
@@ -486,21 +486,21 @@ export default function GeneratorPage() {
             extra={
               <Space>
                 <Popconfirm
-                  title="确认清空当前操作吗？"
-                  description="会清空已选表、预览状态和已生成 ZIP，不会删除模板或历史记录。"
+                  title={t('generator.clearCurrentOperationConfirmTitle')}
+                  description={t('generator.clearCurrentOperationConfirmDesc')}
                   onConfirm={handleClearCurrentSession}
                 >
-                  <Button danger>清空当前操作</Button>
+                  <Button danger>{t('generator.clearCurrentOperation')}</Button>
                 </Popconfirm>
                 <Button type="primary" loading={generating} onClick={handleGeneratePreviewZip}>
-                  生成预览包
+                  {t('generator.generatePreviewZip')}
                 </Button>
                 <Button
                   icon={<DownloadOutlined />}
                   disabled={!generatedZipBlob}
                   onClick={handleDownloadZip}
                 >
-                  下载 ZIP
+                  {t('generator.downloadZip')}
                 </Button>
               </Space>
             }
